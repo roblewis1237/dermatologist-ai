@@ -12,10 +12,6 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 from utils import save_to_pickle_file
 
 
-# CONSTANTS
-# Store list of lesion names
-lesion_names = ['Melanoma', 'Nevus', 'Seborrheic Keratosis']
-
 # PRE-PROCESSING methods
 def _load_dataset(path):
     """ Function to load train / test / validation datasets """

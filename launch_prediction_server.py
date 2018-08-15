@@ -14,6 +14,12 @@ from PIL import Image
 app = flask.Flask(__name__)
 
 
+# CONSTANTS
+# Store list of lesion names
+lesion_names = ['Melanoma', 'Nevus', 'Seborrheic Keratosis']
+
+
+# PREDICTION methods
 def load_cnn_model():
     """ Loads the model using the keras hdf5 file saved to disk """
     global model
@@ -66,8 +72,8 @@ def classify_image():
             with graph.as_default():
                 preds = model.predict(image)
 
-            # results = imagenet_utils.decode_predictions(preds)
-            data["predictions"] = preds.tolist()
+            # Return label of the prediction
+            data["prediction"] = lesion_names[np.argmax(preds)]
 
             # loop over the results and add them to the list of
             # returned predictions
