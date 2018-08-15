@@ -46,11 +46,11 @@ def _create_classification_model(input_tensors):
     model.add(Dropout(0.25))
 
     # Add densely connected layers
-    # Rationale: run through some fully connected layers to classify features. Dim is 133 as 133 different types of dogs
+    # Rationale: run through some fully connected layers to classify features. Dim is 3 as 3 different types of lesions
     model.add(Flatten())
-    model.add(Dense(133, activation='relu'))
+    model.add(Dense(6, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(133, activation='softmax'))
+    model.add(Dense(3, activation='softmax'))
 
     # Print a summary of the model
     model.summary()
