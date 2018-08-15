@@ -19,7 +19,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 lesion_names = ['Melanoma', 'Nevus', 'Seborrheic Keratosis']
 
 # METHODS
-def load_dataset(path):
+def _load_dataset(path):
     """ Function to load train / test / validation datasets """
     data = load_files(path)
     image_files = np.array(data['filenames'])
@@ -27,7 +27,7 @@ def load_dataset(path):
     return image_files, image_targets
 
 
-def path_to_tensor(img_path):
+def _path_to_tensor(img_path):
     """ Reshapes an image into the format required by keras """
     # loads RGB image as PIL.Image.Image type
     img = image.load_img(img_path, target_size=(224, 224))
@@ -37,13 +37,13 @@ def path_to_tensor(img_path):
     return np.expand_dims(x, axis=0)
 
 
-def paths_to_tensor(img_paths):
+def _paths_to_tensor(img_paths):
     """ Runs the method to reshape images for keras on all images """
-    list_of_tensors = [path_to_tensor(img_path) for img_path in tqdm(img_paths)]
+    list_of_tensors = [_path_to_tensor(img_path) for img_path in tqdm(img_paths)]
     return np.vstack(list_of_tensors)
 
 
-def save_to_pickle_file(python_obj, filename):
+def _save_to_pickle_file(python_obj, filename):
     """ Saves python object to pickle file (to avoid the need to always preprocess) """
 
     # TODO: add some defensive code to avoid errors with filepath
@@ -53,7 +53,7 @@ def save_to_pickle_file(python_obj, filename):
         pickle.dump(python_obj, f)
 
 
-def load_from_pickle_file(filepath, variable_name):
+def _load_from_pickle_file(filepath, variable_name):
     """ Loads a pickle file into a python variable """
 
     with open(filepath, "rb") as f:
@@ -62,7 +62,7 @@ def load_from_pickle_file(filepath, variable_name):
     return variable_name
 
 
-def create_classification_model():
+def _create_classification_model():
     """ Create a CNN in keras """
     # TODO: pass dictionary of parameters for grid search of hyperparameters
 
@@ -101,9 +101,9 @@ def create_classification_model():
     return model
 
 print("Loading image files from disk: ")
-train_files, train_targets = load_dataset("data/train")
-valid_files, valid_targets = load_dataset("data/valid")
-test_files, test_targets = load_dataset("data/test")
+train_files, train_targets = _load_dataset("data/train")
+valid_files, valid_targets = _load_dataset("data/valid")
+test_files, test_targets = _load_dataset("data/test")
 
 # print statistics about the dataset
 print('There are %d total lesion categories.' % len(lesion_names))
@@ -113,11 +113,11 @@ print('There are %d validation images.' % len(valid_files))
 print('There are %d test images.'% len(test_files))
 
 print("Reshaping images for input to keras model: ")
-train_tensors = paths_to_tensor(train_files).astype('float32')/255
-valid_tensors = paths_to_tensor(valid_files).astype('float32')/255
-test_tensors = paths_to_tensor(test_files).astype('float32')/255
+train_tensors = _paths_to_tensor(train_files).astype('float32')/255
+valid_tensors = _paths_to_tensor(valid_files).astype('float32')/255
+test_tensors = _paths_to_tensor(test_files).astype('float32')/255
 
 # TODO: add code to export as pickle so we don't have to preprocess every time
 
 print("Generating model architecture")
-model = create_classification_model()
+model = _create_classification_model()
