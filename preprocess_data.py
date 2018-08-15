@@ -41,16 +41,6 @@ def _paths_to_tensor(img_paths):
     return np.vstack(list_of_tensors)
 
 
-def _save_to_pickle_file(python_obj, filename):
-    """ Saves python object to pickle file (to avoid the need to always preprocess) """
-
-    # TODO: add some defensive code to avoid errors with filepath
-    filename = "pickles/" + filename
-
-    with open(filename, "wb") as f:
-        pickle.dump(python_obj, f)
-
-
 def preprocess_data(
         train_data="data/train",
         valid_data="data/valid",
