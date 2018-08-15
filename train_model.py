@@ -117,6 +117,10 @@ def _test_model_accuracy(model, test_tensors, test_targets):
     print('Test accuracy: %.4f%%' % test_accuracy)
 
 
+def _save_model_to_file(model):
+    """ Saves all of the keras model to file (architecture, weights & optimiser """
+    model.save('saved_models/final_trained_model.h5')
+
 def train_and_test_model(epochs=5, batch_size=20):
     """ Trains the model using Keras and saves best fit to disk """
 
@@ -147,6 +151,8 @@ def train_and_test_model(epochs=5, batch_size=20):
     test_targets = load_from_pickle_file("pickles/test_targets_pickle")
 
     _test_model_accuracy(model, test_tensors, test_targets)
+
+    _save_model_to_file(model)
 
 
 if __name__ == "__main__":
