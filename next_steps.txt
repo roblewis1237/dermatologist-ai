@@ -1,0 +1,12 @@
+15-08-2018
+
+Work completed:
+- Set up scripts to load data onto AWS
+- Wrote preprocessor
+- Wrote basic model training and prediction scrips
+- Exposed REST endpoint
+
+Next steps:
+- Modify predict methods to supply more informative classification output
+- Expand train model code to allow i) hyperparameter grid search, and ii) transfer learning
+- TEST, TEST, TEST
