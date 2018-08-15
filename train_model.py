@@ -157,6 +157,7 @@ def train_and_test_model(epochs=5, batch_size=20):
 
 if __name__ == "__main__":
 
+    # TODO: add some command line arguments to allow e.g. specifying epochs
     print("Training and testing the model")
     train_and_test_model()
 

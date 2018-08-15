@@ -67,7 +67,7 @@ def classify_image():
                 preds = model.predict(image)
 
             # results = imagenet_utils.decode_predictions(preds)
-            data["predictions"] = preds
+            data["predictions"] = preds.tolist()
 
             # loop over the results and add them to the list of
             # returned predictions
