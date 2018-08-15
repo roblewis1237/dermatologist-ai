@@ -18,7 +18,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 # TRAIN methods
-def _create_classification_model(train_tensors):
+def _create_classification_model(input_tensors):
     """ Create a CNN in keras """
     # TODO: pass dictionary of parameters for grid search of hyperparameters
 
@@ -29,7 +29,7 @@ def _create_classification_model(train_tensors):
     #    - increase the depth to detect different features using convolutional layers
     #    - reduce the height and width (i.e. spatial information) by using a maxpool layer
     #    - add a dropout to reduce overfitting
-    model.add(Conv2D(16, (2, 2), padding='same', input_shape=train_tensors.shape[1:]))
+    model.add(Conv2D(16, (2, 2), padding='same', input_shape=input_tensors.shape[1:]))
     model.add(Activation('relu'))
     model.add(Conv2D(32, (2, 2), padding='same'))
     model.add(Activation('relu'))
@@ -38,7 +38,7 @@ def _create_classification_model(train_tensors):
 
     # Second cluster of 2 x convolution and 1 x maxpool layers
     # Rationale: same as before, reduce spatial dimensions but increase depth for features
-    model.add(Conv2D(64, (2, 2), padding='same', input_shape=train_tensors.shape[1:]))
+    model.add(Conv2D(64, (2, 2), padding='same', input_shape=input_tensors.shape[1:]))
     model.add(Activation('relu'))
     model.add(Conv2D(128, (2, 2), padding='same'))
     model.add(Activation('relu'))
@@ -102,10 +102,25 @@ def _train_model_on_data(
               epochs=epochs, batch_size=batch_size, callbacks=[checkpointer], verbose=1)
 
 
-def train_model(epochs=5, batch_size=20):
+# TEST methods
+def _test_model_accuracy(model, test_tensors, test_targets):
+    """ Loads the best model from weights saved to disk and tests its accuracy 
+        using the test data set """
+
+    model.load_weights('saved_models/weights.best.from_scratch.hdf5')
+
+    skin_lesion_predictions = [np.argmax(model.predict(np.expand_dims(tensor, axis=0))) for tensor in test_tensors]
+
+    test_accuracy = 100 * np.sum(np.array(skin_lesion_predictions) == np.argmax(test_targets, axis=1)) / len(
+        skin_lesion_predictions)
+
+    print('Test accuracy: %.4f%%' % test_accuracy)
+
+
+def train_and_test_model(epochs=5, batch_size=20):
     """ Trains the model using Keras and saves best fit to disk """
 
-    print("Loading the pickled training data from disk")
+    print("Loading the pickled training and validation data from disk")
     train_tensors = load_from_pickle_file("pickles/train_tensors_pickle")
     train_targets = load_from_pickle_file("pickles/train_targets_pickle")
     valid_tensors = load_from_pickle_file("pickles/valid_tensors_pickle")
@@ -126,14 +141,17 @@ def train_model(epochs=5, batch_size=20):
 
     print("Training complete. Model weights saved at saved_models/weights.best.from_scratch.hdf5")
 
+    print("Test accuracy of trained model: ")
+    print("Loading the pickled testing data from disk")
+    test_tensors = load_from_pickle_file("pickles/test_tensors_pickle")
+    test_targets = load_from_pickle_file("pickles/test_targets_pickle")
 
-def test_model():
-    """ Tests the model using the test set of images """
-    pass
+    _test_model_accuracy(model, test_tensors, test_targets)
+
 
 if __name__ == "__main__":
 
     print("Training and testing the model")
-    train_model()
-    test_model()
+    train_and_test_model()
+
 
