@@ -13,11 +13,15 @@ from PIL import Image
 # initialize our Flask application
 app = flask.Flask(__name__)
 
-
 # CONSTANTS
 # Store list of lesion names
 lesion_names = ['Melanoma', 'Nevus', 'Seborrheic Keratosis']
 
+# USAGE
+# Start the server:
+# 	python launch_prediction_server.py
+# Submit a request via cURL:
+# 	curl -X POST -F image=@image.jpg "http://{IP-address}:5000/predict"
 
 # PREDICTION methods
 def load_cnn_model():
@@ -70,10 +74,14 @@ def classify_image():
             # Code for threadsafing (required to make code run on AWS EC2)
             global graph
             with graph.as_default():
-                preds = model.predict(image)
+                preds = model.predict(image)[0]
 
-            # Return label of the prediction
+            # Return most probable
             data["prediction"] = lesion_names[np.argmax(preds)]
+
+            # Return all predictions
+            preds = preds.tolist()
+            data["predictions"] = {name: preds[idx] for idx, name in enumerate(lesion_names)}
 
             # loop over the results and add them to the list of
             # returned predictions
